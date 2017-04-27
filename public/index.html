@@ -7,10 +7,11 @@
   <title>Document</title>
 </head>
 <body>
-  <h1>Hello, World!</h1>
-  <ul id='msgList'>
-  </ul>
-  <button id='getMsg'>Create New Message</button>
+  <ol id='message-list'></ol>
+  <form id='message-form'>
+    <input name='message' type='text' placeholder='Message' />
+    <button type='submit'>Send</button>
+  </form>
   <script src='/socket.io/socket.io.js'></script>
   <script src='/js/index.js'></script>
 </body>

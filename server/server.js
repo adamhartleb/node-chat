@@ -5,18 +5,16 @@ const http = require('http')
 const app = express()
 const server = http.createServer(app)
 const io = socketIO(server)
+const { getNewMsg } = require('./utils/message')
 
 app.use(express.static('public'))
 
 io.on('connection', socket => {
-  console.log('New user connected')
+  socket.emit('newMessage', getNewMsg('Admin', 'Welcome to the chat app!'))
+  socket.broadcast.emit('newMessage', getNewMsg('Admin', 'A new user joined'))
 
-  socket.on('createMessage', msg => {
-    io.emit('newMessage', {
-      from: msg.from,
-      text: msg.text,
-      createdAt: new Date().toString()
-    })
+  socket.on('createMessage', (msg, callback) => {
+    io.emit('newMessage', getNewMsg(msg.from, msg.text))
   })
 
   socket.on('disconnect', () => {

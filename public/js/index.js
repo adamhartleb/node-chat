@@ -1,26 +1,21 @@
 const socket = io()
 
-const msgList = document.getElementById('msgList')
+const form = document.getElementById('message-form')
+const messageList = document.getElementById('message-list')
 
-document.getElementById('getMsg')
-  .addEventListener('click', () => {
-    socket.emit('createMessage', {
-      from: 'Adam',
-      text: 'Hello, World!'
-    })
+form.addEventListener('submit', e => {
+  e.preventDefault()
+
+  let getTextInput = document.getElementsByName("message")[0]
+
+  socket.emit('createMessage', {
+    from: 'User',
+    text: getTextInput.value
   })
 
-socket.on('newMessage', ({ from, text, createdAt }) => {
-  msgList.innerHTML += `<li>${from} says ${text} - ${createdAt}</li>`
+  getTextInput.value = ''
 })
 
-socket.on('connect', () => {
-  console.log('Connected to server')
-})
-socket.on('disconnect', () => {
-  console.log('Disconnected from server')
-})
-
-socket.on('newMessage', message => {
-  console.log(message.message)
-})
+socket.on('newMessage', ({ from, text }) => {
+  messageList.innerHTML += `<li>${from}: ${text}</li>`
+})  
