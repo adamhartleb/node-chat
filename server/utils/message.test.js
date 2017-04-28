@@ -8,7 +8,7 @@ describe('Generate Message', () => {
     const result = getNewMsg(from, text)
 
     expect(result).toInclude({ from, text })
-    expect(result.createdAt).toBeA('string')
+    expect(result.createdAt).toBeA('number')
   })
   it('should generate the proper location', () => {
     const from = 'Admin'
@@ -17,7 +17,7 @@ describe('Generate Message', () => {
 
     expect(result).toInclude({ from })
     expect(result.url).toBeA('string').toInclude(location.lat)
-    expect(result.createdAt).toBeA('string')
+    expect(result.createdAt).toBeA('number')
   })
 })
 

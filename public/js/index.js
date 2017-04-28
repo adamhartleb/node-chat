@@ -8,7 +8,7 @@ form.addEventListener('submit', e => {
   e.preventDefault()
 
   let getTextInput = document.getElementsByName("message")[0]
-
+  getTextInput.value = getTextInput.value.replace(/</g, "&lt;").replace(/>/g, "&gt;")
   socket.emit('createMessage', {
     from: 'User',
     text: getTextInput.value
@@ -32,9 +32,11 @@ locationBtn.addEventListener('click', function () {
 })
 
 socket.on('newLocationMessage', ({ from, url, createdAt }) => {
-  messageList.innerHTML += `<li>${from}: <a target='_blank' href='${url}'>My current location</a></li>`
+  const formattedTime = moment(createdAt).format('h:mm a')
+  messageList.innerHTML += `<li><b>${from}</b> ${formattedTime}: <a target='_blank' href='${url}'>My current location</a></li>`
 })
 
-socket.on('newMessage', ({ from, text }) => {
-  messageList.innerHTML += `<li>${from}: ${text}</li>`
+socket.on('newMessage', ({ from, text, createdAt }) => {
+  const formattedTime = moment(createdAt).format('h:mm a')
+  messageList.innerHTML += `<li><b>${from}</b> ${formattedTime}: ${text}</li>`
 })  
