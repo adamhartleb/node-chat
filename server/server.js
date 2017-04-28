@@ -29,17 +29,23 @@ io.on('connection', socket => {
     callback()
   })
 
-  socket.on('createMessage', (msg, callback) => {
-    io.emit('newMessage', getNewMsg(msg.from, msg.text))
+  socket.on('createMessage', msg => {
+    const user = users.getUser(socket.id)
+    if (user && isRealString(msg.text)) {
+      io.to(user.room).emit('newMessage', getNewMsg(user, msg.text))
+    }
   })
 
   socket.on('createLocationMessage', ({ lat, lng }) => {
-    io.emit('newLocationMessage', genLocationMsg('Admin', {lat, lng}))
+    const user = users.getUser(socket.id)
+    if (user) {
+      io.to(user.room).emit('newLocationMessage', genLocationMsg(user.name, {lat, lng}))
+    }
   })
 
   socket.on('disconnect', () => {
     const user = users.removeUser(socket.id)
-    console.log(user)
+
     if (user) {
       io.to(user.room).emit('updateUserList', users.getUserList(user.room))
       io.to(user.room).emit('newMessage', getNewMsg('Admin', `${user.name} has left`))

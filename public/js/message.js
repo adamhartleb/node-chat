@@ -7,11 +7,10 @@ const userList = document.getElementById('users')
 
 form.addEventListener('submit', e => {
   e.preventDefault()
-  const params = getParams(window.location.search)
+  
   let getTextInput = document.getElementsByName("message")[0]
   getTextInput.value = getTextInput.value.replace(/</g, "&lt;").replace(/>/g, "&gt;")
   socket.emit('createMessage', {
-    from: `${params.name}`,
     text: getTextInput.value
   })
 
