@@ -18,7 +18,7 @@ app.use(express.static(publicPath))
 
 io.on('connection', socket => {
   socket.on('join', (params, callback) => {
-    if (!isRealString(params.name) || !isRealString(params.name)) {
+    if (!isRealString(params.name) || !isRealString(params.room)) {
       return callback('A name and room are required')
     }
     const room = params.room.toLowerCase()
@@ -36,7 +36,7 @@ io.on('connection', socket => {
   socket.on('createMessage', msg => {
     const user = users.getUser(socket.id)
     if (user && isRealString(msg.text)) {
-      io.to(user.room).emit('newMessage', getNewMsg(user, msg.text))
+      io.to(user.room).emit('newMessage', getNewMsg(user.name, msg.text))
     }
   })
 
