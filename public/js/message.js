@@ -7,7 +7,7 @@ const userList = document.getElementById('users')
 
 form.addEventListener('submit', e => {
   e.preventDefault()
-  
+
   let getTextInput = document.getElementsByName("message")[0]
   getTextInput.value = getTextInput.value.replace(/</g, "&lt;").replace(/>/g, "&gt;")
   socket.emit('createMessage', {
@@ -57,6 +57,7 @@ socket.on('connect', function () {
 })
 
 socket.on('updateUserList', function (users) {
+  userList.innerHTML = ''
   users.forEach(user => {
     userList.innerHTML += `<li>${user}</li>`
   })
