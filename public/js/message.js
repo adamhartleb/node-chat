@@ -3,14 +3,15 @@ const socket = io()
 const form = document.getElementById('message-form')
 const messageList = document.getElementById('message-list')
 const locationBtn = document.getElementById('send-location')
+const userList = document.getElementById('users')
 
 form.addEventListener('submit', e => {
   e.preventDefault()
-
+  const params = getParams(window.location.search)
   let getTextInput = document.getElementsByName("message")[0]
   getTextInput.value = getTextInput.value.replace(/</g, "&lt;").replace(/>/g, "&gt;")
   socket.emit('createMessage', {
-    from: 'User',
+    from: `${params.name}`,
     text: getTextInput.value
   })
 
@@ -42,6 +43,25 @@ function scrollToBottom () {
     messageList.scrollTop = totalMessageHeight
   }
 }
+
+socket.on('connect', function () {
+  const params = getParams(window.location.search)
+
+  socket.emit('join', params, err => {
+    if (err) {
+      alert(err)
+      window.location.href = '/'
+    } else {
+      console.log('No error')
+    }
+  })
+})
+
+socket.on('updateUserList', function (users) {
+  users.forEach(user => {
+    userList.innerHTML += `<li>${user}</li>`
+  })
+})
 
 socket.on('newLocationMessage', ({ from, url, createdAt }) => {
   const formattedTime = moment(createdAt).format('h:mm a')
