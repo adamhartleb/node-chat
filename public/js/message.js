@@ -31,12 +31,28 @@ locationBtn.addEventListener('click', function () {
   })
 })
 
+function scrollToBottom () {
+  const messages = document.getElementsByClassName('message')
+  const newMessage = messages[messages.length - 1].clientHeight
+  const totalMessageHeight = messages.length * newMessage
+  const clientHeight = window.innerHeight
+
+  if (totalMessageHeight >= clientHeight) {
+    console.log(messageList.scrollTop)
+    messageList.scrollTop = totalMessageHeight
+  }
+}
+
 socket.on('newLocationMessage', ({ from, url, createdAt }) => {
   const formattedTime = moment(createdAt).format('h:mm a')
-  messageList.innerHTML += `<li><b>${from}</b> ${formattedTime}: <a target='_blank' href='${url}'>My current location</a></li>`
+  messageList.innerHTML += `<li class='message'><div class='message__title'><h4>${from}</h4><span>${formattedTime}</span></div>
+  <div class='message__body'><p><a target='_blank' href='${url}'>My current location</a></p></div></li>`
+  scrollToBottom()
 })
 
 socket.on('newMessage', ({ from, text, createdAt }) => {
   const formattedTime = moment(createdAt).format('h:mm a')
-  messageList.innerHTML += `<li><b>${from}</b> ${formattedTime}: ${text}</li>`
+  messageList.innerHTML += `<li class='message'><div class='message__title'><h4>${from}</h4><span>${formattedTime}</span></div>
+  <div class='message__body'><p>${text}</p></div></li>`
+  scrollToBottom()
 })  
