@@ -5,7 +5,7 @@ const http = require('http')
 const app = express()
 const server = http.createServer(app)
 const io = socketIO(server)
-const { getNewMsg } = require('./utils/message')
+const { getNewMsg, genLocationMsg } = require('./utils/message')
 
 app.use(express.static('public'))
 
@@ -15,6 +15,10 @@ io.on('connection', socket => {
 
   socket.on('createMessage', (msg, callback) => {
     io.emit('newMessage', getNewMsg(msg.from, msg.text))
+  })
+
+  socket.on('createLocationMessage', ({ lat, lng }) => {
+    io.emit('newLocationMessage', genLocationMsg('Admin', {lat, lng}))
   })
 
   socket.on('disconnect', () => {
