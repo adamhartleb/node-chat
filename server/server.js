@@ -1,16 +1,20 @@
 const express = require('express')
 const socketIO = require('socket.io')
 const http = require('http')
+const path = require('path')
 
 const app = express()
 const server = http.createServer(app)
 const io = socketIO(server)
+const publicPath = path.join(__dirname, '../public')
+const port = process.env.PORT || 8079
+
 const { getNewMsg, genLocationMsg } = require('./utils/message')
 const { isRealString } = require('./utils/validation')
 const { Users } = require('./utils/users')
 const users = new Users()
 
-app.use(express.static('public'))
+app.use(express.static(publicPath))
 
 io.on('connection', socket => {
   socket.on('join', (params, callback) => {
@@ -53,4 +57,4 @@ io.on('connection', socket => {
   })
 })
 
-server.listen(8079)
+server.listen(port)
